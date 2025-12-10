@@ -1,0 +1,5 @@
+{
+  "name": "Bommen Barend Online",
+  "description": "A real-time multiplayer Bomberman clone using WebRTC (PeerJS) for peer-to-peer connectivity.",
+  "requestFramePermissions": []
+}
