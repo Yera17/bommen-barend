@@ -20,8 +20,14 @@ const App: React.FC = () => {
   const reqRef = useRef<number>();
   const lastTimeRef = useRef<number>(0);
   const isHostRef = useRef<boolean>(false);
+  const statusRef = useRef<'LOBBY' | 'HOSTING' | 'PLAYING'>('LOBBY');
 
-  // Initialize PeerJS on mount
+  // Keep statusRef in sync with status state
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
+
+  // Initialize PeerJS on mount (only once!)
   useEffect(() => {
     const peer = new Peer();
     
@@ -31,12 +37,16 @@ const App: React.FC = () => {
     });
 
     peer.on('connection', (conn) => {
-      // If we are hosting, accept connection
-      if (status === 'LOBBY' || status === 'HOSTING') {
+      // If we are hosting, accept connection (use ref to get current status)
+      if (statusRef.current === 'LOBBY' || statusRef.current === 'HOSTING') {
         console.log('Incoming connection...');
         connRef.current = conn;
         setupConnection(conn, true);
       }
+    });
+
+    peer.on('error', (err) => {
+      console.error('PeerJS error:', err);
     });
 
     peerRef.current = peer;
@@ -44,7 +54,7 @@ const App: React.FC = () => {
     return () => {
       peer.destroy();
     };
-  }, [status]);
+  }, []); // Empty dependency array - only run once on mount!
 
   const setupConnection = (conn: DataConnection, amHost: boolean) => {
     isHostRef.current = amHost;
