@@ -20,7 +20,7 @@ export interface Entity {
 
 export interface Player extends Entity {
   id: string;
-  isBot: boolean; // Kept for legacy, though primarily P2P now
+  isBot: boolean;
   lives: number;
   maxBombs: number;
   activeBombs: number;
@@ -32,6 +32,14 @@ export interface Player extends Entity {
   invincibleTimer: number;
   color: string;
   direction: 'up' | 'down' | 'left' | 'right' | null;
+  emoji: string;
+  emojiTimer: number;
+}
+
+export interface ChatMessage {
+  playerId: string;
+  message: string;
+  timestamp: number;
 }
 
 export interface Bomb extends Entity {
@@ -57,24 +65,14 @@ export interface GameState {
   bombs: Bomb[];
   explosions: Explosion[];
   powerups: Powerup[];
+  chatMessages: ChatMessage[];
   winner: string | null;
   adVisible: boolean;
 }
 
-// Network Payloads
+// Input sent from client to server
 export interface InputPayload {
   dx: number;
   dy: number;
   placeBomb: boolean;
-}
-
-export interface InitPayload {
-  type: 'INIT';
-  playerId: string; // The ID assigned to the connecting client
-  gameState: GameState;
-}
-
-export interface UpdatePayload {
-  type: 'UPDATE';
-  gameState: GameState;
 }

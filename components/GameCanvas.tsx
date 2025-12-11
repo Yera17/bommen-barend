@@ -79,15 +79,6 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, myPlayerId }) => {
       
       const alpha = p.invincibleTimer > 0 ? (Math.sin(Date.now() / 50) > 0 ? 1 : 0.3) : 1;
       ctx.globalAlpha = alpha;
-      
-      // Draw indicator ring for self
-      if (isMe) {
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, TILE_SIZE/2 - 2, 0, Math.PI * 2);
-        ctx.stroke();
-      }
 
       ctx.font = `${TILE_SIZE * 0.8}px Arial`;
       // Slightly center the emoji
@@ -98,8 +89,16 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, myPlayerId }) => {
       ctx.fillStyle = 'white';
       ctx.textAlign = 'center';
       ctx.fillText(isMe ? 'JIJ' : 'TEGENSTANDER', p.x, p.y - 20);
+      
+      // Reaction emoji (floating above player)
+      if (p.emoji && p.emojiTimer > 0) {
+        ctx.font = `${TILE_SIZE * 0.6}px Arial`;
+        // Bounce animation based on timer
+        const bounce = Math.sin(p.emojiTimer * 5) * 3;
+        ctx.fillText(p.emoji, p.x - TILE_SIZE * 0.15, p.y - 35 + bounce);
+      }
+      
       ctx.textAlign = 'start';
-
       ctx.globalAlpha = 1;
     });
 

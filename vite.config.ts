@@ -8,6 +8,15 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        proxy: {
+          // Proxy WebSocket connections to Colyseus server
+          '/ws': {
+            target: 'ws://localhost:2567',
+            ws: true,
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/ws/, '')
+          }
+        }
       },
       plugins: [react()],
       define: {
